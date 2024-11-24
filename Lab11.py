@@ -68,7 +68,7 @@ def get_submissions(directory):
 
 
 def calculate_student_grade(student_name, students, assignments, submissions):
-    normalized_name = student_name.strip().lower()
+    normalized_name = student_name.lower()
     student_id = None
     for sid, student in students.items():
         if student.name == normalized_name:
@@ -89,13 +89,13 @@ def calculate_student_grade(student_name, students, assignments, submissions):
         print("No submissions found for the student")
         return
     grade_percentage = (total_points_earned / total_points_possible) * 100
-    print(f"{student_name.title()}: {round(grade_percentage)}%")
+    print(f"{round(grade_percentage)}%")
 
 
 def calculate_assignment_statistics(assignment_name, assignments, submissions):
     assignment_id = None
     for aid, assignment in assignments.items():
-        if assignment.name.lower() == assignment_name.strip().lower():
+        if assignment.name.lower() == assignment_name.lower():
             assignment_id = aid
             break
     if not assignment_id:
@@ -117,7 +117,7 @@ def calculate_assignment_statistics(assignment_name, assignments, submissions):
 def generate_assignment_graph(assignment_name, assignments, submissions):
     assignment_id = None
     for aid, assignment in assignments.items():
-        if assignment.name.lower() == assignment_name.strip().lower():
+        if assignment.name.lower() == assignment_name.lower():
             assignment_id = aid
             break
     if not assignment_id:
@@ -131,7 +131,7 @@ def generate_assignment_graph(assignment_name, assignments, submissions):
     if not scores:
         print("No submissions found for the assignment")
         return
-    plt.hist(scores, bins=[0, 25, 50, 75, 100])
+    plt.hist(scores, bins=[0, 25, 50, 75, 100], edgecolor='black', rwidth=0.8)
     plt.title(f"Scores Distribution for {assignment_name}")
     plt.xlabel("Scores (%)")
     plt.ylabel("Frequency")
@@ -143,27 +143,26 @@ def main():
     assignments = get_assignments('data/assignments.txt')
     submissions = get_submissions('data/submissions')
 
-    try:
-        while True:
-            print("1. Student grade")
-            print("2. Assignment statistics")
-            print("3. Assignment graph")
-            choice = input("Enter your selection: ")
 
-            if choice == "1":
-                student_name = input("What is the student's name: ")
-                calculate_student_grade(student_name, students, assignments, submissions)
-            elif choice == "2":
-                assignment_name = input("What is the assignment name: ")
-                calculate_assignment_statistics(assignment_name, assignments, submissions)
-            elif choice == "3":
-                assignment_name = input("What is the assignment name: ")
-                generate_assignment_graph(assignment_name, assignments, submissions)
-            else:
-                print("Invalid choice, exiting program.")
-                break
-    except EOFError:
-        print("EOFError: No more input provided. Exiting program.")
+
+    print("1. Student grade")
+    print("2. Assignment statistics")
+    print("3. Assignment graph")
+    print("Enter your selection:")
+    choice = input()
+    if choice == "1":
+        student_name = input("What is the student's name: ")
+        calculate_student_grade(student_name, students, assignments, submissions)
+    elif choice == "2":
+        assignment_name = input("What is the assignment name: ")
+        calculate_assignment_statistics(assignment_name, assignments, submissions)
+    elif choice == "3":
+        assignment_name = input("What is the assignment name: ")
+        generate_assignment_graph(assignment_name, assignments, submissions)
+    else:
+        print("Invalid choice, exiting program.")
+
+
 
 
 if __name__ == "__main__":

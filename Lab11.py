@@ -65,7 +65,7 @@ def get_submissions(directory):
                 student_id, assignment_id, percent = line.strip().split("|")
                 submissions.append(Submission(student_id, assignment_id, percent))
     return submissions
-    hi = 1
+
 
 def calculate_student_grade(student_name, students, assignments, submissions):
     normalized_name = student_name.strip().lower()
@@ -142,24 +142,28 @@ def main():
     students = get_students('data/students.txt')
     assignments = get_assignments('data/assignments.txt')
     submissions = get_submissions('data/submissions')
-    while True:
-        print("1. Student grade")
-        print("2. Assignment statistics")
-        print("3. Assignment graph")
-        print("Enter your selection:")
-        choice = input().strip()
-        if choice == "1":
-            student_name = input("What is the student's name: ")
-            calculate_student_grade(student_name, students, assignments, submissions)
-        elif choice == "2":
-            assignment_name = input("What is the assignment name: ")
-            calculate_assignment_statistics(assignment_name, assignments, submissions)
-        elif choice == "3":
-            assignment_name = input("What is the assignment name: ")
-            generate_assignment_graph(assignment_name, assignments, submissions)
-        else:
-            print("Invalid choice, exiting program.")
-            break
+
+    try:
+        while True:
+            print("1. Student grade")
+            print("2. Assignment statistics")
+            print("3. Assignment graph")
+            choice = input("Enter your selection: ")
+
+            if choice == "1":
+                student_name = input("What is the student's name: ")
+                calculate_student_grade(student_name, students, assignments, submissions)
+            elif choice == "2":
+                assignment_name = input("What is the assignment name: ")
+                calculate_assignment_statistics(assignment_name, assignments, submissions)
+            elif choice == "3":
+                assignment_name = input("What is the assignment name: ")
+                generate_assignment_graph(assignment_name, assignments, submissions)
+            else:
+                print("Invalid choice, exiting program.")
+                break
+    except EOFError:
+        print("EOFError: No more input provided. Exiting program.")
 
 
 if __name__ == "__main__":

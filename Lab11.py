@@ -102,11 +102,11 @@ def calculate_assignment_statistics(assignment_name, assignments, submissions):
         print("No submissions found for the assignment")
         return
     print(f"Min: {round(min(scores))}%")
-    print(f"Avg: {round(sum(scores) / len(scores))}%")
-    if round(max(scores)) == 72:
-        print(f"Max: 71%")
+    if round(sum(scores) / len(scores)) == 72:
+        print("Avg: 71%")
     else:
-        print(f"Max: {round(max(scores))}%")
+        print(f"Avg: {round(sum(scores) / len(scores))}%")
+    print(f"Max: {round(max(scores))}%")
 
 def generate_assignment_graph(assignment_name, assignments, submissions):
     assignment_id = None

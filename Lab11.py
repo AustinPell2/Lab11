@@ -65,7 +65,7 @@ def get_submissions(directory):
                 student_id, assignment_id, percent = line.strip().split("|")
                 submissions.append(Submission(student_id, assignment_id, percent))
     return submissions
-
+    hi = 1
 
 def calculate_student_grade(student_name, students, assignments, submissions):
     normalized_name = student_name.strip().lower()

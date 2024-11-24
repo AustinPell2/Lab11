@@ -35,11 +35,9 @@ def get_students(file_path):
     students = {}
     with open(file_path, 'r') as file:
         for line in file:
-            # Extract the first three characters as the student ID and the rest as the name
-            student_id = line[:3].strip()  # First 3 characters are the student ID
-            name = line[3:].strip()  # The rest is the name
-            students[student_id] = Student(student_id, name.lower())  # Normalize the name to lowercase
-    print(f"Loaded students: {students}")  # Debugging: Print loaded students
+            student_id = line[:3].strip()
+            name = line[3:].strip()
+            students[student_id] = Student(student_id, name.lower())
     return students
 
 
@@ -49,11 +47,11 @@ def get_assignments(file_path):
         lines = file.readlines()
         i = 0
         while i < len(lines):
-            name = lines[i].strip()  # Assignment name
+            name = lines[i].strip()
             i += 1
-            assignment_id = lines[i].strip()  # Assignment ID
+            assignment_id = lines[i].strip()
             i += 1
-            points = lines[i].strip()  # Points
+            points = lines[i].strip()
             i += 1
             assignments[assignment_id] = Assignment(assignment_id, name, points)
     return assignments
@@ -70,120 +68,86 @@ def get_submissions(directory):
 
 
 def calculate_student_grade(student_name, students, assignments, submissions):
-    normalized_name = student_name.strip().lower()  # Normalize input for case and whitespace
+    normalized_name = student_name.strip().lower()
     student_id = None
-
-    # Search for the student by normalized name
     for sid, student in students.items():
         if student.name == normalized_name:
             student_id = sid
             break
-
     if not student_id:
-        print("Student not found. Loaded students are:")
-        for sid, student in students.items():
-            print(f"{sid}: {student.name}")  # Improved debugging to show student names
+        print("Student not found")
         return
-
-    # Calculate grades
     total_points_earned = 0
     total_points_possible = 0
-
     for submission in submissions:
         if submission.student_id == student_id:
             assignment = assignments[submission.assignment_id]
             points_earned = (submission.percent / 100) * assignment.points
             total_points_earned += points_earned
             total_points_possible += assignment.points
-
     if total_points_possible == 0:
         print("No submissions found for the student")
         return
-
     grade_percentage = (total_points_earned / total_points_possible) * 100
     print(f"{student_name.title()}: {round(grade_percentage)}%")
 
 
 def calculate_assignment_statistics(assignment_name, assignments, submissions):
-    # Find the assignment ID by name
     assignment_id = None
     for aid, assignment in assignments.items():
         if assignment.name.lower() == assignment_name.strip().lower():
             assignment_id = aid
             break
-
     if not assignment_id:
         print("Assignment not found")
         return
-
-    # Calculate scores as percentages
     scores = [
         submission.percent
         for submission in submissions
         if submission.assignment_id == assignment_id
     ]
-
     if not scores:
         print("No submissions found for the assignment")
         return
-
-    # Print Min, Avg, and Max in percentages
     print(f"Min: {round(min(scores))}%")
     print(f"Avg: {round(sum(scores) / len(scores))}%")
     print(f"Max: {round(max(scores))}%")
 
 
 def generate_assignment_graph(assignment_name, assignments, submissions):
-    # Find the assignment ID
     assignment_id = None
     for aid, assignment in assignments.items():
         if assignment.name.lower() == assignment_name.strip().lower():
             assignment_id = aid
             break
-
     if not assignment_id:
         print("Assignment not found")
         return
-
-    # Collect percent scores for the assignment
     scores = [
         submission.percent
         for submission in submissions
         if submission.assignment_id == assignment_id
     ]
-
     if not scores:
         print("No submissions found for the assignment")
         return
-
-    # Debugging: Print percent scores
-    print(f"Percent scores for {assignment_name}: {scores}")
-
-    # Generate a histogram with smaller bins
-    bins = [50, 60, 70, 80, 90, 100]  # Example ranges from the prompt
-    plt.hist(scores, bins=bins, edgecolor='black', rwidth=0.8)
+    plt.hist(scores, bins=[0, 25, 50, 75, 100])
     plt.title(f"Scores Distribution for {assignment_name}")
     plt.xlabel("Scores (%)")
     plt.ylabel("Frequency")
-    plt.xticks(bins)  # Ensure proper tick labels on x-axis
     plt.show()
 
 
 def main():
-    # Load data files
     students = get_students('data/students.txt')
     assignments = get_assignments('data/assignments.txt')
     submissions = get_submissions('data/submissions')
-
     while True:
-        # Display menu
         print("1. Student grade")
         print("2. Assignment statistics")
         print("3. Assignment graph")
         print("Enter your selection:")
-
         choice = input().strip()
-
         if choice == "1":
             student_name = input("What is the student's name: ")
             calculate_student_grade(student_name, students, assignments, submissions)

@@ -7,6 +7,9 @@ class Student:
         self.student_id = student_id
         self.name = name
 
+    def __repr__(self):
+        return f"Student(ID={self.student_id}, Name={self.name})"
+
 
 class Assignment:
     def __init__(self, assignment_id, name, points):
@@ -26,8 +29,11 @@ def get_students(file_path):
     students = {}
     with open(file_path, 'r') as file:
         for line in file:
-            student_id, name = line.strip().split(" ", 1)  # Assuming space-separated values
-            students[student_id] = Student(student_id, name.strip().lower())  # Store name in lowercase
+            # Extract the first three characters as the student ID and the rest as the name
+            student_id = line[:3].strip()  # First 3 characters are the student ID
+            name = line[3:].strip()  # The rest is the name
+            students[student_id] = Student(student_id, name.lower())  # Normalize the name to lowercase
+    print(f"Loaded students: {students}")  # Debugging: Print loaded students
     return students
 
 
@@ -58,16 +64,22 @@ def get_submissions(directory):
 
 
 def calculate_student_grade(student_name, students, assignments, submissions):
-    student_id = None
     normalized_name = student_name.strip().lower()  # Normalize input for case and whitespace
+    student_id = None
+
+    # Search for the student by normalized name
     for sid, student in students.items():
         if student.name == normalized_name:
             student_id = sid
             break
+
     if not student_id:
-        print("Student not found")
+        print("Student not found. Loaded students are:")
+        for sid, student in students.items():
+            print(f"{sid}: {student.name}")  # Improved debugging to show student names
         return
 
+    # Calculate grades
     total_points_earned = 0
     total_points_possible = 0
 
@@ -83,7 +95,7 @@ def calculate_student_grade(student_name, students, assignments, submissions):
         return
 
     grade_percentage = (total_points_earned / total_points_possible) * 100
-    print(f"{student_name}: {round(grade_percentage)}%")
+    print(f"{student_name.title()}: {round(grade_percentage)}%")
 
 
 def calculate_assignment_statistics(assignment_name, assignments, submissions):

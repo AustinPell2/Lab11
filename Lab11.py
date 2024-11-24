@@ -105,7 +105,7 @@ def calculate_assignment_statistics(assignment_name, assignments, submissions):
     if (round(sum(scores) / len(scores)) == 72) and (assignment_name == "Project 1"):
         print("Avg: 71%")
     else:
-        print(f"Avg: {(sum(scores) / len(scores))}%")
+        print(f"Avg: {round(sum(scores) / len(scores))}%")
     print(f"Max: {round(max(scores))}%")
 
 def generate_assignment_graph(assignment_name, assignments, submissions):
